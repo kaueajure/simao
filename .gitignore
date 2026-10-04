@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.next-review/
+.env*
+!.env.example
+*.tsbuildinfo
+.test-postgres/
+test-results/
+playwright-report/
+coverage/
+tests/.auth/
+supabase/.temp/
+supabase/.branches/

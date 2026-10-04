@@ -1,0 +1,37 @@
+import { redirect } from 'next/navigation';
+import { session } from '@/server/auth';
+import { ProfileForm } from '@/components/profile-form';
+import { Brand, Avatar } from '@/components/ui';
+export const metadata = { title: 'Seu perfil', robots: { index: false, follow: false } };
+export default async function Onboarding() {
+  const { profile, user } = await session();
+  if (profile) redirect('/app');
+  const name = typeof user.user_metadata.full_name === 'string' ? user.user_metadata.full_name : '';
+  const raw = user.user_metadata.avatar_url;
+  const avatar =
+    typeof raw === 'string' && /^https:\/\/lh[0-9]+\.googleusercontent\.com\//.test(raw)
+      ? raw
+      : null;
+  return (
+    <>
+      <header className="public-header">
+        <div className="wrap">
+          <Brand />
+        </div>
+      </header>
+      <main id="conteudo" className="form-page standalone-form wrap">
+        <p className="eyebrow">Só falta se apresentar</p>
+        <h1>
+          Como a cidade
+          <br />
+          vai conhecer você?
+        </h1>
+        <p className="muted">
+          Seu e-mail fica privado. A comunidade vê seu nome, foto e nome de usuário.
+        </p>
+        <Avatar name={name || 'Você'} url={avatar} size={64} />
+        <ProfileForm defaultName={name} googlePhotoAvailable={Boolean(avatar)} />
+      </main>
+    </>
+  );
+}

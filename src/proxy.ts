@@ -1,0 +1,52 @@
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
+import type { Database } from '@/lib/supabase/database.types';
+import { optionalEnv, secureCookies } from '@/lib/env';
+export async function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  const dev = process.env.NODE_ENV !== 'production';
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' https://lh3.googleusercontent.com https://lh4.googleusercontent.com https://lh5.googleusercontent.com https://maps.gstatic.com data:",
+    "font-src 'self'",
+    "connect-src 'self'" + (dev ? ' ws: wss:' : ''),
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self' https://accounts.google.com https://*.supabase.co",
+  ].join('; ');
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', csp);
+  let response = NextResponse.next({ request: { headers: requestHeaders } });
+  const url = optionalEnv('NEXT_PUBLIC_SUPABASE_URL'),
+    key = optionalEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
+  if (url && key) {
+    const client = createServerClient<Database>(url, key, {
+      cookieOptions: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: secureCookies(),
+        path: '/',
+      },
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (items) => {
+          items.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request: { headers: requestHeaders } });
+          items.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        },
+      },
+    });
+    await client.auth.getClaims();
+  }
+  response.headers.set('Content-Security-Policy', csp);
+  response.headers.set('Cache-Control', 'private, no-store');
+  return response;
+}
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2)$).*)',
+  ],
+};
