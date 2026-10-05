@@ -4,7 +4,7 @@ Executada em 4 de outubro de 2026, com Node 24 e build de produção do Next.js.
 
 ## Verificações automatizadas
 
-Resultado após a revisão de interface, cidades e aplicação do protótipo Figma: **78 testes unitários/integrados e 38 testes E2E locais aprovados**, lint sem warnings, typecheck e build de produção aprovados. A instalação da fonte Inter e remoção de DM Sans/Manrope concluíram a auditoria npm sem vulnerabilidades.
+Resultado após a revisão de interface, cidades, aplicação do protótipo Figma, padronização do painel interno e restauração do layout público: **78 testes unitários/integrados e 41 testes E2E locais aprovados**, lint sem warnings, typecheck e build de produção aprovados. A instalação da fonte Inter e remoção de DM Sans/Manrope concluíram a auditoria npm sem vulnerabilidades.
 
 - ESLint sem warnings.
 - TypeScript em modo strict.
@@ -19,6 +19,8 @@ Resultado após a revisão de interface, cidades e aplicação do protótipo Fig
 - Verificação de overflow e screenshots em 320, 375, 390, 414, 768, 1024, 1280 e 1440 px para landing, feed, composição, detalhe revelado, atividades, ranking e perfis.
 - Revisão adicional de edição, indicação, áreas administrativas, páginas legais/ausentes, nomes e textos longos. Testes medem alinhamento dos filtros, verificam aba ativa visível no celular e exercitam busca nacional de cidades, debounce, seleção obrigatória, teclado/toque, retry e resposta atrasada. Formulários preservam valores após erro e edição do perfil mostra sucesso sem sair da página. Detalhes em `REVISAO_INTERFACE.md`.
 - Identidade do protótipo: fonte Inter carregada localmente, cores das superfícies, limites laterais, colunas do detalhe, ilustração sem encolhimento e estatísticas alinhadas no perfil. Menu móvel exercitado por clique, teclado, Escape, clique externo e navegação administrativa. Compartilhamento copia a URL sem parâmetros de feedback/paginação e oferece cópia manual quando o clipboard não está disponível. Screenshots comparadas com o protótipo em desktop e celular; padrão documentado em `PADRAO_VISUAL.md`.
+- Painel fixo interno: comparação real de posição, largura e altura entre oito rotas autenticadas, oito larguras e alturas de 600/850 px. Documento sem rolagem horizontal/vertical; conteúdo extenso acessível por rolagem interna sem deslocar cabeçalho ou aumentar o painel. Sugestões de cidades respeitam os limites do painel. Navegação retorna a área interna ao início. Formulários em duas colunas quando há espaço e topo do feed compacto no celular; testes adicionais verificam o primeiro pedido visível nas larguras a partir de 375 px em altura de 850 px.
+- Layout público completo: landing, login, cadastro, recuperação, privacidade e termos sem painel fixo. Teste verifica rolagem natural da página, rodapé e links legais acessíveis, além de ausência de overflow horizontal nas oito larguras em altura de 600 px.
 - Imagem Open Graph com a nova identidade: rota respondeu HTTP 200, conteúdo `image/png` e assinatura PNG válida. Busca por credenciais locais nos arquivos de código e documentação não encontrou exposição.
 
 ## Revisão de fronteiras

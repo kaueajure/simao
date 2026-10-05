@@ -1,5 +1,41 @@
 import { test, expect } from '@playwright/test';
 const widths = [320, 375, 390, 414, 768, 1024, 1280, 1440];
+test('páginas públicas usam rolagem natural e rodapé acessível fora do painel do app', async ({
+  page,
+}) => {
+  test.setTimeout(90000);
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 600 });
+    for (const route of [
+      '/',
+      '/entrar',
+      '/cadastro',
+      '/recuperar-senha',
+      '/privacidade',
+      '/termos',
+    ]) {
+      await page.goto(route);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expect(page.locator('.app-shell, .app-main, .app-content')).toHaveCount(0);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        `${route}: ${width}px sem rolagem horizontal`,
+      ).toBe(true);
+      const footer = page.getByRole('contentinfo');
+      await expect(footer).toBeVisible();
+      await footer.scrollIntoViewIfNeeded();
+      // The document's scroll height rounds fractional pixels at its bottom edge.
+      await expect(footer).toBeInViewport({ ratio: 0.99 });
+      expect(
+        await page.evaluate(() => scrollY),
+        `${route}: ${width}px com rolagem da página`,
+      ).toBeGreaterThan(0);
+      await expect(footer.getByRole('link', { name: 'Termos de uso' })).toBeInViewport({
+        ratio: 1,
+      });
+    }
+  }
+});
 test('landing explica o ciclo e não promete estoque', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Pergunte');

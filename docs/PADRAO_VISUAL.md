@@ -23,8 +23,9 @@ Os tokens e os estilos compartilhados estão em `src/app/globals.css`. Novas tel
 ## Estrutura
 
 - Cabeçalho branco de 68 px no desktop e 64 px no celular. Navegação central no desktop, perfil à direita e menu expansível no celular. Página atual indicada visualmente e com `aria-current`.
-- Conteúdo autenticado em uma única superfície branca, com largura máxima de 1.280 px, margem superior de 22 px e espaçamento interno de 32 px. No celular, margens laterais de 16 px e espaçamento interno menor.
-- Formulários têm largura de leitura controlada. Login, cadastro, recuperação, onboarding e páginas legais recebem a mesma identidade e superfícies brancas.
+- Telas internas usam o mesmo painel principal: largura máxima de 1.280 px e altura determinada pela janela, sem crescer com o conteúdo. A estrutura `app-shell` ocupa `100dvh`, reserva a linha do cabeçalho e distribui o restante ao painel. Margens superior/inferior de 22 px no desktop e 10 px no celular; espaçamento interno de 24 px no desktop e menor no celular.
+- Landing, login, cadastro, recuperação de senha e páginas legais usam o layout público completo, com rolagem natural do documento, cabeçalho e rodapé. Não usam `app-shell` ou `ViewportContent`. Formulários de acesso têm largura máxima de 560 px e altura natural; textos legais têm largura máxima de 740 px.
+- Formulários internos têm largura de leitura controlada **dentro** do painel. O onboarding, exibido após autenticação, também usa esse painel. Composição e perfil usam duas colunas a partir de 768 px.
 - Feed, atividades, ranking e administração continuam usando listas com divisórias. Painéis adicionais aparecem quando representam uma função específica, como o contexto de um pedido ou um grupo de indicações.
 - Inputs e botões de filtro têm 52 px e compartilham a linha do campo, mantendo labels e textos de ajuda separados. Ações compactas do detalhe têm área de interação de pelo menos 44 px no celular.
 - Abas rolam horizontalmente quando necessário e mantêm a opção ativa visível. Cidades usam o autocomplete nacional já existente, sem botão de busca.
@@ -44,12 +45,16 @@ As adaptações funcionais seguem a especificação:
 - Revelar encerra o recebimento de novas respostas. O solicitante confirma o estabelecimento por meio do fluxo existente; a interface não fornece um atalho para marcar o pedido como encontrado sem essa decisão.
 - Indicações reveladas continuam agrupadas por estabelecimento, com participantes, comentários, denúncia e confirmação. Recompensas e idempotência permanecem no PostgreSQL.
 - Compartilhar usa a interface nativa do dispositivo quando disponível. A alternativa copia a URL canônica do pedido; se o clipboard estiver indisponível ou for recusado, mostra um campo para cópia manual. Parâmetros de feedback e paginação são removidos do link. O acesso ao pedido mantém os requisitos de autenticação existentes.
-- O autor continua disponível no celular. A página rola naturalmente, permitindo visualizar descrições, comentários e históricos longos.
+- O autor continua disponível no celular. O documento não rola: conteúdos que excedem o espaço permanecem acessíveis por rolagem interna em `ViewportContent`, com o painel e o cabeçalho fixos. A navegação para outra página/filtro retorna o conteúdo ao início. A densidade é ajustada em janelas baixas, preservando texto legível e controles acessíveis.
 
 ## Verificação
 
 Os testes em `tests/e2e/design.spec.ts` verificam fonte/carregamento, cores, disposição das colunas, tamanho da ilustração, limites da superfície, privacidade e ferramentas permitidas no pedido aberto. Também exercitam menu por mouse/teclado, Escape, clique externo, links e acesso administrativo, além de cópia e alternativa manual de compartilhamento.
 
 As suítes existentes continuam verificando o fluxo completo e a responsividade das demais telas. Larguras: 320, 375, 390, 414, 768, 1.024, 1.280 e 1.440 px. Screenshots são geradas em `test-results/`, incluindo `prototipo-pedido-vazio-*` e `prototipo-menu-*`, para comparação com a referência.
+
+`tests/e2e/viewport.spec.ts` compara posição, largura e altura do painel entre feed, ranking, atividades, perfis, composição, edição e detalhe, nos oito tamanhos e em alturas de 600 e 850 px. Verifica ausência de rolagem do documento, acesso aos controles ao fim de formulários longos, cabeçalho imóvel, navegação ao início e sugestões de cidade dentro do espaço visível. A lista de cidades considera tanto `visualViewport` quanto a área interna do painel.
+
+`tests/e2e/public.spec.ts` verifica que landing, login, cadastro, recuperação e páginas legais têm rolagem natural, rodapé acessível e ausência de overflow horizontal nas oito larguras, com altura de 600 px. As páginas públicas preservam a identidade visual sem o painel fixo das telas internas.
 
 Não há nova migration, configuração obrigatória de ambiente ou alteração em autenticação, RLS, pontuação e validação de estabelecimentos. A dependência de fonte Inter substitui DM Sans e Manrope. O teste visual usa Chromium; serviços externos nos E2E ficam isolados nas fixtures existentes, conforme `VERIFICACAO.md`.

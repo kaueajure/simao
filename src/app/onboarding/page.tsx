@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { session } from '@/server/auth';
 import { ProfileForm } from '@/components/profile-form';
 import { Brand, Avatar } from '@/components/ui';
+import { ViewportContent } from '@/components/viewport-content';
 export const metadata = { title: 'Seu perfil', robots: { index: false, follow: false } };
 export default async function Onboarding() {
   const { profile, user } = await session();
@@ -13,25 +14,29 @@ export default async function Onboarding() {
       ? raw
       : null;
   return (
-    <>
+    <div className="app-shell">
       <header className="public-header">
         <div className="wrap">
           <Brand />
         </div>
       </header>
-      <main id="conteudo" className="form-page standalone-form wrap">
-        <p className="eyebrow">Só falta se apresentar</p>
-        <h1>
-          Como a cidade
-          <br />
-          vai conhecer você?
-        </h1>
-        <p className="muted">
-          Seu e-mail fica privado. A comunidade vê seu nome, foto e nome de usuário.
-        </p>
-        <Avatar name={name || 'Você'} url={avatar} size={64} />
-        <ProfileForm defaultName={name} googlePhotoAvailable={Boolean(avatar)} />
+      <main id="conteudo" className="app-main wrap">
+        <ViewportContent>
+          <div className="form-page onboarding-form">
+            <p className="eyebrow">Só falta se apresentar</p>
+            <h1>
+              Como a cidade
+              <br />
+              vai conhecer você?
+            </h1>
+            <p className="muted">
+              Seu e-mail fica privado. A comunidade vê seu nome, foto e nome de usuário.
+            </p>
+            <Avatar name={name || 'Você'} url={avatar} size={64} />
+            <ProfileForm defaultName={name} googlePhotoAvailable={Boolean(avatar)} />
+          </div>
+        </ViewportContent>
       </main>
-    </>
+    </div>
   );
 }

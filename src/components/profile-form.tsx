@@ -14,7 +14,11 @@ export function ProfileForm({
   googlePhotoAvailable?: boolean;
 }) {
   return (
-    <ActionForm action={saveProfile} label={profile ? 'Salvar perfil' : 'Concluir e entrar'}>
+    <ActionForm
+      action={saveProfile}
+      label={profile ? 'Salvar perfil' : 'Concluir e entrar'}
+      className="profile-form"
+    >
       <div className="field">
         <label htmlFor="displayName">Nome de exibição</label>
         <input

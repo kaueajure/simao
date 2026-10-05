@@ -32,8 +32,11 @@ export function CitySelector({
       if (!input.current || !list.current) return;
       const rect = input.current.getBoundingClientRect();
       const viewport = window.visualViewport;
-      const top = viewport?.offsetTop || 0;
-      const bottom = top + (viewport?.height || window.innerHeight);
+      const viewportTop = viewport?.offsetTop || 0;
+      const viewportBottom = viewportTop + (viewport?.height || window.innerHeight);
+      const panel = input.current.closest('.app-content')?.getBoundingClientRect();
+      const top = Math.max(viewportTop, panel?.top || viewportTop);
+      const bottom = Math.min(viewportBottom, panel?.bottom || viewportBottom);
       const below = bottom - rect.bottom - 12;
       const above = rect.top - top - 12;
       const upwards = below < 160 && above > below;

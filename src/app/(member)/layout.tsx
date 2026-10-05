@@ -3,11 +3,12 @@ import { DesktopNavigation, MobileNavigation } from '@/components/navigation';
 import { member } from '@/server/auth';
 import { Brand, Avatar } from '@/components/ui';
 import { Icon } from '@/components/icon';
+import { ViewportContent } from '@/components/viewport-content';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function MemberLayout({ children }: { children: React.ReactNode }) {
   const { profile, admin } = await member();
   return (
-    <>
+    <div className="app-shell">
       <header className="app-header">
         <div className="wrap">
           <Brand />
@@ -26,8 +27,8 @@ export default async function MemberLayout({ children }: { children: React.React
         </div>
       </header>
       <main id="conteudo" className="app-main wrap">
-        {children}
+        <ViewportContent>{children}</ViewportContent>
       </main>
-    </>
+    </div>
   );
 }

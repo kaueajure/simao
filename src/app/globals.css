@@ -614,13 +614,140 @@ img {
   font-size: 11px;
   color: var(--muted);
 }
+.app-shell {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 22px;
+  padding-bottom: 22px;
+  overflow: hidden;
+}
 .app-main {
-  margin-block: 22px 32px;
-  padding: 32px;
-  min-height: calc(100dvh - 122px);
+  margin-block: 0;
+  padding: 24px;
+  min-height: 0;
+  height: 100%;
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--surface);
+  overflow: hidden;
+  min-width: 0;
+}
+.app-content {
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #cad6d1 transparent;
+  padding-inline: 8px;
+  scroll-padding-block: 12px;
+}
+.app-content .form-page {
+  padding-bottom: 8px;
+}
+.app-content .back-link {
+  margin-bottom: 14px;
+}
+.app-content .form-page > .eyebrow {
+  margin-top: 8px;
+}
+.app-content .form-page h1 {
+  font-size: clamp(28px, 3vw, 36px);
+  margin-block: 12px;
+}
+.app-content .form-page > .muted {
+  margin-bottom: 18px;
+}
+.app-content .profile-heading {
+  margin-bottom: 16px;
+}
+.app-content .profile-heading h1 {
+  margin-block: 6px;
+}
+.app-content .profile-stats {
+  padding-block: 12px;
+  margin-bottom: 16px;
+}
+.app-content .profile-links {
+  margin-bottom: 18px;
+}
+.app-content .profile-links + h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.app-content .logout-form {
+  margin-top: 18px;
+  padding-top: 16px;
+}
+.app-content .composer > .field,
+.app-content .profile-form > .field {
+  margin-top: 14px;
+}
+.app-content .composer > .field:first-child,
+.app-content .profile-form > .field:first-child {
+  margin-top: 0;
+}
+.app-content .composer > .button,
+.app-content .profile-form > .button {
+  margin-top: 16px;
+}
+.app-content .composer textarea {
+  min-height: 96px;
+}
+@media (min-width: 768px) {
+  .app-content .composer,
+  .app-content .profile-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px 20px;
+    align-items: start;
+  }
+  .app-content .composer > .field,
+  .app-content .profile-form > .field {
+    margin: 0;
+  }
+  .composer > .field:first-child,
+  .composer > :not(.field),
+  .profile-form > .city-selector,
+  .profile-form > :not(.field) {
+    grid-column: 1 / -1;
+  }
+  .app-content .composer > .button,
+  .app-content .profile-form > .button {
+    margin-top: 0;
+    width: 100%;
+  }
+}
+@media (max-height: 760px) {
+  .app-content .app-intro h1 {
+    font-size: clamp(28px, 3vw, 38px);
+    margin-top: 8px;
+  }
+  .app-content .app-intro > .muted {
+    margin-top: 8px;
+  }
+  .app-content .feed-search {
+    margin-block: 20px;
+  }
+  .app-content .empty {
+    padding-block: 24px;
+    margin-block: 16px;
+  }
+  .app-content .empty .location-illustration {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+  }
+  .app-content .request-header h1 {
+    font-size: clamp(28px, 3.4vw, 42px);
+  }
+  .app-content .response-gate {
+    min-height: 300px;
+    padding-block: 24px;
+  }
 }
 .app-intro h1 {
   margin-top: 16px;
@@ -1008,13 +1135,7 @@ textarea {
   margin-inline: auto;
   padding-bottom: 32px;
 }
-.standalone-form {
-  margin-block: 32px;
-  padding: 32px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-}
+
 .form-page > .eyebrow {
   margin-top: 24px;
 }
@@ -1188,7 +1309,7 @@ textarea {
   top: calc(100% + 8px);
   right: 0;
   z-index: 25;
-  width: min(300px, calc(100vw - 64px));
+  width: min(300px, calc(100vw - 112px));
   padding: 14px;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -2031,11 +2152,13 @@ textarea {
     width: 32px !important;
     height: 32px !important;
   }
+  .app-shell {
+    gap: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
   .app-main {
-    margin-block: 10px 20px;
     padding: 24px 16px;
     border-radius: 16px;
-    min-height: calc(100dvh - 96px);
   }
   .heading-action {
     align-items: flex-start;
@@ -2184,11 +2307,6 @@ textarea {
   .form-page > .muted {
     font-size: 14px;
     margin-bottom: 24px;
-  }
-  .standalone-form {
-    margin-block: 16px 24px;
-    padding: 24px 20px;
-    border-radius: 16px;
   }
   .back-link {
     margin-bottom: 20px;
@@ -2435,15 +2553,15 @@ textarea {
     font-size: 14px;
     gap: 16px;
   }
-  .legal-page {
-    padding: 24px 20px;
-    margin-block: 16px 32px;
-    border-radius: 16px;
-  }
   .error-page:not(.app-main .error-page) {
     padding: 24px 20px;
     border-radius: 16px;
     margin-block: 16px 32px;
+  }
+  .legal-page {
+    padding: 24px 20px;
+    margin-block: 16px 32px;
+    border-radius: 16px;
   }
   .legal-page h1 {
     font-size: 34px;
@@ -2456,6 +2574,52 @@ textarea {
   }
   .pagination .hint {
     font-size: 11px;
+  }
+}
+@media (max-width: 767px) {
+  .app-content .app-intro > .eyebrow {
+    display: none;
+  }
+  .app-content .app-intro h1 {
+    font-size: 26px;
+    margin-top: 0;
+  }
+  .app-content .app-intro .mobile-break {
+    display: none;
+  }
+  .app-content .app-intro .heading-action {
+    gap: 12px;
+  }
+  .app-content .app-intro .heading-action > .button {
+    font-size: 12px;
+    padding-inline: 12px;
+  }
+  .app-content .app-intro > .muted {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+  .app-content .feed-search {
+    margin-block: 16px;
+    gap: 12px;
+  }
+  .app-content .section-bar {
+    gap: 6px;
+    padding-bottom: 8px;
+  }
+  .app-content .section-bar .tabs a {
+    min-height: 44px;
+    padding-block: 10px;
+  }
+  .app-content .request-row {
+    padding-block: 18px;
+  }
+}
+@media (min-width: 375px) and (max-width: 767px) {
+  .app-content .app-intro .heading-action {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
 }
 @media (max-width: 359px) {
